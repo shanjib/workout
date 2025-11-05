@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WorkoutRepository extends JpaRepository<Workout, Long> {
-    Optional<Workout> findTopByTypeNotOrderByDateDesc(WorkoutType type);
+    Optional<Workout> findTopByOrderByDateDesc();
+    Optional<Workout> findTopByTypeOrderByDateDesc(WorkoutType type);
     List<Workout> findByType(WorkoutType type);
 }

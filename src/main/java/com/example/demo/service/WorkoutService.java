@@ -26,11 +26,11 @@ public class WorkoutService {
     }
 
     public Optional<Workout> getLastWorkout() {
-        return workoutRepository.findTopByTypeNotOrderByDateDesc(WorkoutType.CARDIO);
+        return workoutRepository.findTopByOrderByDateDesc();
     }
 
     public Optional<Workout> getLastWorkoutOfType(WorkoutType type) {
-        return workoutRepository.findTopByTypeNotOrderByDateDesc(type);
+        return workoutRepository.findTopByTypeOrderByDateDesc(type);
     }
 
     public WorkoutType getNextWorkoutType(WorkoutType currentType) {

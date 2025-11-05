@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.ExerciseRequestDTO;
 import com.example.demo.model.Exercise;
 import com.example.demo.repository.ExerciseRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,25 +12,23 @@ import java.util.List;
 
 @RestController
 @RequestMapping(Constants.EXERCISES)
+@RequiredArgsConstructor
 public class ExerciseController {
 
     private final ExerciseRepository exerciseRepository;
-
-    public ExerciseController(ExerciseRepository exerciseRepository) {
-        this.exerciseRepository = exerciseRepository;
-    }
 
     @PostMapping(Constants.NEW)
     public ResponseEntity<List<Exercise>> addExercise(@RequestBody List<ExerciseRequestDTO> exerciseDTOs) {
         List<Exercise> saved = new ArrayList<>();
         for (ExerciseRequestDTO exerciseDTO : exerciseDTOs) {
-            Exercise exercise = new Exercise();
-            exercise.setName(exerciseDTO.getName());
-            exercise.setType(exerciseDTO.getType());
-            exercise.setSets(exerciseDTO.getSets());
-            exercise.setReps(exerciseDTO.getReps());
-            exercise.setWeightIncrement(exerciseDTO.getWeightIncrement());
-            exercise.setInitialWeight(exerciseDTO.getInitialWeight());
+            Exercise exercise = Exercise.builder()
+                    .name(exerciseDTO.getName())
+                    .type(exerciseDTO.getType())
+                    .sets(exerciseDTO.getSets())
+                    .reps(exerciseDTO.getReps())
+                    .weightIncrement(exerciseDTO.getWeightIncrement())
+                    .initialWeight(exerciseDTO.getInitialWeight())
+                    .build();
             Exercise savedExercise = exerciseRepository.save(exercise);
             saved.add(savedExercise);
         }

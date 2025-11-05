@@ -4,11 +4,17 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
+
 import java.util.List;
 
 @Entity
 @Data
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
+@NoArgsConstructor
 public class TrackedExercise extends Exercise {
     @ElementCollection
     private List<Integer> repsPerSet;
@@ -16,6 +22,7 @@ public class TrackedExercise extends Exercise {
 
     @JsonBackReference
     @ManyToOne
+    @ToString.Exclude
     private Workout workout;
 
     public int getSuccessfulSets() {

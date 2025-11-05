@@ -6,9 +6,6 @@ plugins {
 
 group = 'com.example'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '17'
-
-def postgresVersion = '42.5.4'
 
 repositories {
     mavenCentral()
@@ -17,8 +14,7 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-//    implementation 'org.springframework.boot:spring-boot-starter-security'
-//    runtimeOnly "org.postgresql:postgresql:$postgresVersion"
+    implementation 'com.google.code.gson:gson'
     runtimeOnly 'com.h2database:h2'
     compileOnly 'org.projectlombok:lombok:1.18.36'
     annotationProcessor 'org.projectlombok:lombok:1.18.36'
