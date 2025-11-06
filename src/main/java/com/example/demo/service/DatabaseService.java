@@ -2,20 +2,18 @@ package com.example.demo.service;
 
 import com.example.demo.model.*;
 import com.example.demo.repository.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 @Service
-public class WorkoutService {
+public class DatabaseService {
     private final WorkoutRepository workoutRepository;
     private final ExerciseRepository exerciseRepository;
-
-    public WorkoutService(WorkoutRepository workoutRepository, ExerciseRepository exerciseRepository) {
-        this.workoutRepository = workoutRepository;
-        this.exerciseRepository = exerciseRepository;
-    }
+    private final TrackedExerciseRepository trackedExerciseRepository;
 
     public List<Workout> getAllWorkouts() {
         return workoutRepository.findAll();

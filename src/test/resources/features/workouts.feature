@@ -63,6 +63,7 @@ Feature: Workout Management
     "type": "PULL",
     "trackedExercises": [
       {
+        "id": 2,
         "name": "Deadlift",
         "type": "PULL",
         "sets": 5,
@@ -85,6 +86,7 @@ Feature: Workout Management
     "type": "LEG",
     "trackedExercises": [
       {
+        "id": 3,
         "name": "Squat",
         "type": "LEG",
         "sets": 5,

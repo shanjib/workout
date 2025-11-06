@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.*;
-import com.example.demo.service.WorkoutService;
+import com.example.demo.service.DatabaseService;
 import com.example.demo.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 @RequestMapping(Constants.WORKOUTS)
 @RequiredArgsConstructor
 public class WorkoutController {
-    private final WorkoutService service;
+    private final DatabaseService service;
     private final DateUtil dateUtil;
 
     @GetMapping(Constants.NEW)

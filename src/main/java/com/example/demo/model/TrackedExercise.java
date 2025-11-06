@@ -15,7 +15,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 @NoArgsConstructor
-public class TrackedExercise extends Exercise {
+public class TrackedExercise extends BaseExercise {
     @ElementCollection
     private List<Integer> repsPerSet;
     private double weight;
