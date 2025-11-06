@@ -2,8 +2,10 @@ package com.example.demo.steps;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.controller.Constants;
+import com.example.demo.model.Exercise;
 import com.example.demo.model.Workout;
 import com.google.gson.*;
+import io.cucumber.java.PendingException;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -38,23 +40,19 @@ public class WorkoutSteps {
         DemoApplication.main(new String[] {});
     }
 
+    @When("I create new exercises with:")
+    public void iCreateNewExercisesWith(String json) {
+        response = restTemplate.postForEntity(BASE_URL + Constants.EXERCISES + Constants.NEW, buildEntity(json), String.class);
+    }
+
+    @Then("the response is successful")
+    public void theResponseIsSuccessful() {
+        assertEquals(200, response.getStatusCode().value());
+    }
+
     @When("I request a new workout")
     public void iRequestANewWorkout() {
         response = restTemplate.getForEntity(BASE_URL + Constants.WORKOUTS + Constants.NEW, String.class);
-    }
-
-    @When("I create new exercises with:")
-    public void iCreateNewExercisesWith(String json) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<String> entity = new HttpEntity<>(json, headers);
-
-        response = restTemplate.postForEntity(BASE_URL + Constants.EXERCISES + Constants.NEW, entity, String.class);
-    }
-
-    @Then("the exercises are saved successfully")
-    public void theExercisesAreSavedSuccessfully() {
-        assertEquals(200, response.getStatusCode().value());
     }
 
     @Then("the response should be")
@@ -62,5 +60,21 @@ public class WorkoutSteps {
         Workout expected = gson.fromJson(json, Workout.class);
         Workout actual = gson.fromJson(response.getBody(), Workout.class);
         assertEquals(expected, actual);
+    }
+
+    @When("I complete a set")
+    public void iCompleteASet(String json) {
+        response = restTemplate.postForEntity(BASE_URL + Constants.EXERCISES + Constants.TRACKED_EXERCISES + Constants.UPDATE, buildEntity(json), String.class);
+    }
+
+    @When("I request existing workout {int}")
+    public void iRequestExistingWorkout(int id) {
+        response = restTemplate.getForEntity(BASE_URL + Constants.WORKOUTS + Constants.GET + "/" + id, String.class);
+    }
+
+    private HttpEntity<String> buildEntity(String json) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new HttpEntity<>(json, headers);
     }
 }

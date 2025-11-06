@@ -19,6 +19,10 @@ public class DatabaseService {
         return workoutRepository.findAll();
     }
 
+    public Workout getWorkoutById(long id) {
+        return workoutRepository.findById(id).orElse(null);
+    }
+
     public Workout saveWorkout(Workout workout) {
         return workoutRepository.save(workout);
     }
@@ -40,7 +44,19 @@ public class DatabaseService {
         };
     }
 
+    public Exercise saveExercise(Exercise exercise) {
+        return exerciseRepository.save(exercise);
+    }
+
     public List<Exercise> getExercisesByType(WorkoutType type) {
         return exerciseRepository.findByType(type);
+    }
+
+    public TrackedExercise saveTrackedExercise(TrackedExercise exercise) {
+        return trackedExerciseRepository.save(exercise);
+    }
+
+    public TrackedExercise getTrackedExerciseById(long id) {
+        return trackedExerciseRepository.findById(id).orElse(null);
     }
 }

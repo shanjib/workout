@@ -1,13 +1,11 @@
 package com.example.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
-import java.util.List;
+import java.util.Map;
 
 @Entity
 @Data
@@ -17,7 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 public class TrackedExercise extends BaseExercise {
     @ElementCollection
-    private List<Integer> repsPerSet;
+    @MapKeyColumn(name = "set_number")
+    @Column(name = "reps")
+    private Map<Integer, Integer> repsPerSet;
     private double weight;
 
     @JsonBackReference
@@ -26,6 +26,6 @@ public class TrackedExercise extends BaseExercise {
     private Workout workout;
 
     public int getSuccessfulSets() {
-        return (int) repsPerSet.stream().filter(reps -> reps >= getReps()).count();
+        return (int) repsPerSet.values().stream().filter(reps -> reps >= getReps()).count();
     }
 }

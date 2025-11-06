@@ -4,9 +4,10 @@ import com.example.demo.model.*;
 import com.example.demo.service.DatabaseService;
 import com.example.demo.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +18,21 @@ import java.util.stream.Collectors;
 public class WorkoutController {
     private final DatabaseService service;
     private final DateUtil dateUtil;
+
+    @GetMapping(Constants.GET)
+    public ResponseEntity<List<Workout>> getAllWorkouts() {
+        return ResponseEntity.ok(service.getAllWorkouts());
+    }
+
+    @GetMapping(Constants.GET + "/{id}")
+    public ResponseEntity<Workout> getWorkoutById(@PathVariable long id) {
+        Workout workout = service.getWorkoutById(id);
+        if (workout == null) {
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(workout);
+        }
+    }
 
     @GetMapping(Constants.NEW)
     public Workout getNewWorkout() {
@@ -47,7 +63,7 @@ public class WorkoutController {
                         .weight(e.getInitialWeight())
                         .type(e.getType())
                         .workout(newWorkout)
-                        .repsPerSet(new ArrayList<>())
+                        .repsPerSet(new HashMap<>())
                         .build())
                 .collect(Collectors.toList());
 
