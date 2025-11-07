@@ -27,21 +27,12 @@ public class DatabaseService {
         return workoutRepository.save(workout);
     }
 
-    public Optional<Workout> getLastWorkout() {
-        return workoutRepository.findTopByOrderByDateDesc();
+    public Workout getLastWorkout() {
+        return workoutRepository.findTopByOrderByDateDesc().orElse(null);
     }
 
-    public Optional<Workout> getLastWorkoutOfType(WorkoutType type) {
-        return workoutRepository.findTopByTypeOrderByDateDesc(type);
-    }
-
-    public WorkoutType getNextWorkoutType(WorkoutType currentType) {
-        return switch (currentType) {
-            case PUSH -> WorkoutType.PULL;
-            case PULL -> WorkoutType.LEG;
-            case LEG -> WorkoutType.PUSH;
-            default -> currentType;
-        };
+    public Workout getLastWorkoutOfType(WorkoutType type) {
+        return workoutRepository.findTopByTypeOrderByDateDesc(type).orElse(null);
     }
 
     public Exercise saveExercise(Exercise exercise) {

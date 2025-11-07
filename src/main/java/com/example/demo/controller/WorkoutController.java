@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,15 +38,19 @@ public class WorkoutController {
 
     @GetMapping(Constants.NEW)
     public Workout getNewWorkout() {
-        Optional<Workout> lastWorkoutOpt = service.getLastWorkout();
-        WorkoutType type = WorkoutType.PUSH;
-        if (lastWorkoutOpt.isPresent()) {
-            Workout lastWorkout = lastWorkoutOpt.get();
-            type = service.getNextWorkoutType(lastWorkout.getType());
-        }
-
+        Workout lastWorkout = service.getLastWorkout();
+        WorkoutType type = lastWorkout == null ? WorkoutType.PUSH : getNextWorkoutType(lastWorkout.getType());
         Workout newWorkout = buildNewWorkout(type);
         return service.saveWorkout(newWorkout);
+    }
+
+    private WorkoutType getNextWorkoutType(WorkoutType currentType) {
+        return switch (currentType) {
+            case PUSH -> WorkoutType.PULL;
+            case PULL -> WorkoutType.LEG;
+            case LEG -> WorkoutType.PUSH;
+            default -> currentType;
+        };
     }
 
     private Workout buildNewWorkout(WorkoutType type) {
@@ -66,8 +72,25 @@ public class WorkoutController {
                         .repsPerSet(new HashMap<>())
                         .build())
                 .collect(Collectors.toList());
-
+        Workout lastOfType = service.getLastWorkoutOfType(type);
+        if (lastOfType != null) {
+            updateWeights(trackedExercises, lastOfType.getTrackedExercises());
+        }
         newWorkout.setTrackedExercises(trackedExercises);
         return newWorkout;
+    }
+
+    private void updateWeights(List<TrackedExercise> current, List<TrackedExercise> last) {
+        Map<String, TrackedExercise> currentByName = current.stream().collect(Collectors.toMap(TrackedExercise::getName, Function.identity()));
+        Map<String, TrackedExercise> lastByName = last.stream().collect(Collectors.toMap(TrackedExercise::getName, Function.identity()));
+        currentByName.forEach((name, te) -> {
+            if (lastByName.containsKey(name)) {
+                TrackedExercise lte = lastByName.get(name);
+                if (lte.isSuccessful()) {
+                    te.setWeight(lte.getWeight() + te.getWeightIncrement());
+                }
+            }
+        });
+
     }
 }

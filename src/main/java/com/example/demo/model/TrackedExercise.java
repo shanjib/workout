@@ -25,7 +25,7 @@ public class TrackedExercise extends BaseExercise {
     @ToString.Exclude
     private Workout workout;
 
-    public int getSuccessfulSets() {
-        return (int) repsPerSet.values().stream().filter(reps -> reps >= getReps()).count();
+    public boolean isSuccessful() {
+        return repsPerSet.values().stream().filter(reps -> reps >= getReps()).count() >= getSets();
     }
 }
