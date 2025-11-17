@@ -1,7 +1,6 @@
 Feature: Workout Management
 
-  Scenario: Create a new workout
-    Given the application is running
+  Scenario: Workout Lifecycle
     When I create new exercises with:
     """
     [
@@ -209,3 +208,28 @@ Feature: Workout Management
       ]
     }
     """
+
+  Scenario: Ad-hoc Workout
+    When I create new exercises with:
+    """
+    [
+      {
+        "name": "Run",
+        "type": "CARDIO",
+        "sets": 0,
+        "reps": 0,
+        "weightIncrement": 0,
+        "initialWeight": 0
+      },
+      {
+        "name": "Basketball",
+        "type": "CARDIO",
+        "sets": 0,
+        "reps": 0,
+        "weightIncrement": 0,
+        "initialWeight": 0
+      }
+    ]
+    """
+    Then the response is successful
+

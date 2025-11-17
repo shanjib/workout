@@ -2,11 +2,9 @@ package com.example.demo.steps;
 
 import com.example.demo.DemoApplication;
 import com.example.demo.controller.Constants;
-import com.example.demo.model.Exercise;
 import com.example.demo.model.Workout;
 import com.google.gson.*;
-import io.cucumber.java.PendingException;
-import io.cucumber.java.en.Given;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -19,7 +17,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Slf4j
 @CucumberContextConfiguration
@@ -35,8 +33,8 @@ public class WorkoutSteps {
 
     private ResponseEntity<String> response;
 
-    @Given("the application is running")
-    public void theApplicationIsRunning() {
+    @BeforeAll
+    public static void theApplicationIsRunning() {
         DemoApplication.main(new String[] {});
     }
 

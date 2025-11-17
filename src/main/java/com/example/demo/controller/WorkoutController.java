@@ -1,22 +1,29 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.*;
+import com.example.demo.model.Exercise;
+import com.example.demo.model.TrackedExercise;
+import com.example.demo.model.Workout;
+import com.example.demo.model.WorkoutType;
 import com.example.demo.service.DatabaseService;
 import com.example.demo.util.DateUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(Constants.WORKOUTS)
 @RequiredArgsConstructor
+@Slf4j
 public class WorkoutController {
     private final DatabaseService service;
     private final DateUtil dateUtil;
@@ -28,8 +35,10 @@ public class WorkoutController {
 
     @GetMapping(Constants.GET + "/{id}")
     public ResponseEntity<Workout> getWorkoutById(@PathVariable long id) {
+        log.info("Received request for workout with ID {}", id);
         Workout workout = service.getWorkoutById(id);
         if (workout == null) {
+            log.error("No workout found.");
             return ResponseEntity.notFound().build();
         } else {
             return ResponseEntity.ok(workout);
@@ -38,6 +47,7 @@ public class WorkoutController {
 
     @GetMapping(Constants.NEW)
     public Workout getNewWorkout() {
+        log.info("Creating new workout.");
         Workout lastWorkout = service.getLastWorkout();
         WorkoutType type = lastWorkout == null ? WorkoutType.PUSH : getNextWorkoutType(lastWorkout.getType());
         Workout newWorkout = buildNewWorkout(type);

@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import com.example.demo.dto.ExerciseRequestDTO;
 import com.example.demo.dto.ExerciseUpdateDTO;
 import com.example.demo.model.Exercise;
 import com.example.demo.model.TrackedExercise;
@@ -19,17 +18,9 @@ public class ExerciseController {
     private final DatabaseService service;
 
     @PostMapping(Constants.NEW)
-    public ResponseEntity<List<Exercise>> addExercise(@RequestBody List<ExerciseRequestDTO> exerciseDTOs) {
+    public ResponseEntity<List<Exercise>> addExercise(@RequestBody List<Exercise> exercises) {
         List<Exercise> saved = new ArrayList<>();
-        for (ExerciseRequestDTO exerciseDTO : exerciseDTOs) {
-            Exercise exercise = Exercise.builder()
-                    .name(exerciseDTO.getName())
-                    .type(exerciseDTO.getType())
-                    .sets(exerciseDTO.getSets())
-                    .reps(exerciseDTO.getReps())
-                    .weightIncrement(exerciseDTO.getWeightIncrement())
-                    .initialWeight(exerciseDTO.getInitialWeight())
-                    .build();
+        for (Exercise exercise : exercises) {
             Exercise savedExercise = service.saveExercise(exercise);
             saved.add(savedExercise);
         }
