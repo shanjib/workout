@@ -9,10 +9,7 @@ import com.example.demo.util.DateUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,7 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping(Constants.WORKOUTS)
+@RequestMapping(Constants.API + Constants.WORKOUTS)
 @RequiredArgsConstructor
 @Slf4j
 public class WorkoutController {
@@ -33,7 +30,7 @@ public class WorkoutController {
         return ResponseEntity.ok(service.getAllWorkouts());
     }
 
-    @GetMapping(Constants.GET + "/{id}")
+    @GetMapping(Constants.GET + Constants.ID)
     public ResponseEntity<Workout> getWorkoutById(@PathVariable long id) {
         log.info("Received request for workout with ID {}", id);
         Workout workout = service.getWorkoutById(id);
@@ -46,12 +43,13 @@ public class WorkoutController {
     }
 
     @GetMapping(Constants.NEW)
-    public Workout getNewWorkout() {
+    public ResponseEntity<Workout> getNewWorkout() {
         log.info("Creating new workout.");
         Workout lastWorkout = service.getLastWorkout();
         WorkoutType type = lastWorkout == null ? WorkoutType.PUSH : getNextWorkoutType(lastWorkout.getType());
         Workout newWorkout = buildNewWorkout(type);
-        return service.saveWorkout(newWorkout);
+        Workout workout = service.saveWorkout(newWorkout);
+        return ResponseEntity.ok(workout);
     }
 
     private WorkoutType getNextWorkoutType(WorkoutType currentType) {
