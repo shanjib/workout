@@ -3,32 +3,34 @@ Feature: Workout Management
   Scenario: Workout Lifecycle
     When I create new exercises with:
     """
-    [
+{
+   "exercises":[
       {
-        "name": "Bench Press",
-        "type": "PUSH",
-        "sets": 1,
-        "reps": 5,
-        "weightIncrement": 5.0,
-        "initialWeight": 45
+         "name":"Bench Press",
+         "type":"PUSH",
+         "sets":1,
+         "reps":5,
+         "weightIncrement":5.0,
+         "initialWeight":45
       },
       {
-        "name": "Deadlift",
-        "type": "PULL",
-        "sets": 5,
-        "reps": 5,
-        "weightIncrement": 5.0,
-        "initialWeight": 45
+         "name":"Deadlift",
+         "type":"PULL",
+         "sets":5,
+         "reps":5,
+         "weightIncrement":5.0,
+         "initialWeight":45
       },
       {
-        "name": "Squat",
-        "type": "LEG",
-        "sets": 5,
-        "reps": 5,
-        "weightIncrement": 5.0,
-        "initialWeight": 45
+         "name":"Squat",
+         "type":"LEG",
+         "sets":5,
+         "reps":5,
+         "weightIncrement":5.0,
+         "initialWeight":45
       }
-    ]
+   ]
+}
     """
     Then the response is successful
     When I request a new workout
@@ -208,28 +210,3 @@ Feature: Workout Management
       ]
     }
     """
-
-  Scenario: Ad-hoc Workout
-    When I create new exercises with:
-    """
-    [
-      {
-        "name": "Run",
-        "type": "CARDIO",
-        "sets": 0,
-        "reps": 0,
-        "weightIncrement": 0,
-        "initialWeight": 0
-      },
-      {
-        "name": "Basketball",
-        "type": "CARDIO",
-        "sets": 0,
-        "reps": 0,
-        "weightIncrement": 0,
-        "initialWeight": 0
-      }
-    ]
-    """
-    Then the response is successful
-

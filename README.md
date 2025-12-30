@@ -5,10 +5,10 @@ This application is meant to track a push/pull/leg split, with the occasional ca
 ## Endpoints
 
 ### Exercise
-/new - create a new exercise
-/tracked/update - update an existing workout
+/api/exercise/new - create a new exercise
+/api/exercise/tracked/update/{id} - update an existing workout
 
 ### Workout
-/get - get all
-/get/id - get specific
-/new - get new
+/api/workout/get - get all
+/api/workout/get/{id} - get specific
+/api/workout/new - get new workout based on push/pull/leg and prior workout
