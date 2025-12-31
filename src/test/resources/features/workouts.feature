@@ -32,7 +32,28 @@ Feature: Workout Management
   ]
 }
     """
-    Then the response is successful
+    Then the 6 response should be
+    """
+{
+  "exercises":[
+    {
+      "name":"Bench Press",
+      "success":true,
+      "id":1
+    },
+    {
+      "name":"Deadlift",
+      "success":true,
+      "id":2
+    },
+    {
+      "name":"Squat",
+      "success":true,
+      "id":3
+    }
+  ]
+}
+    """
     When I get exercises
     Then the 1 response should be
     """
@@ -71,12 +92,14 @@ Feature: Workout Management
     When I update exercise 1 with
     """
 {
-  "name":"Bench Press",
-  "type":"PUSH",
-  "sets":3,
-  "reps":5,
-  "weightIncrement":5.0,
-  "initialWeight":45
+  "exercise":{
+    "name":"Bench Press",
+    "type":"PUSH",
+    "sets":3,
+    "reps":5,
+    "weightIncrement":5.0,
+    "initialWeight":45
+  }
 }
     """
     Then the response is successful
@@ -194,6 +217,188 @@ Feature: Workout Management
   "date":"2025-01-03",
   "exerciseToWeight":{
     "Deadlift":45
+  }
+}
+    """
+    When I confirm the next workout details
+    """
+{
+  "type":"PULL",
+  "date":"2025-01-03",
+  "exerciseToWeight":{
+    "Deadlift":80
+  }
+}
+    """
+    Then the 4 response should be
+    """
+{
+  "id":2
+}
+    """
+    When I get workout 2
+    Then the 5 response should be
+    """
+{
+  "workout":{
+    "type":"PULL",
+    "date":"2025-01-03",
+    "exercises":[
+      {
+        "name":"Deadlift",
+        "type":"PULL",
+        "weight":80,
+        "setsToReps":{
+          "1":0,
+          "2":0,
+          "3":0
+        }
+      }
+    ]
+  }
+}
+    """
+    When I update workout 2
+    """
+{
+  "type":"PULL",
+  "date":"2025-01-03",
+  "exercises":[
+    {
+      "name":"Deadlift",
+      "type":"PULL",
+      "weight":80,
+      "setsToReps":{
+        "1":5,
+        "2":5,
+        "3":5
+      }
+    }
+  ]
+}
+    """
+    Then the response is successful
+    When I get workout 2
+    Then the 5 response should be
+    """
+{
+  "workout":{
+    "type":"PULL",
+    "date":"2025-01-03",
+    "exercises":[
+      {
+        "name":"Deadlift",
+        "type":"PULL",
+        "weight":80,
+        "setsToReps":{
+          "1":5,
+          "2":5,
+          "3":5
+        }
+      }
+    ]
+  }
+}
+    """
+    When I request the next workout details
+    Then the 3 response should be
+    """
+{
+  "type":"LEG",
+  "date":"2025-01-04",
+  "exerciseToWeight":{
+    "Squat":45
+  }
+}
+    """
+    When I confirm the next workout details
+    """
+{
+  "type":"LEG",
+  "date":"2025-01-04",
+  "exerciseToWeight":{
+    "Squat":45
+  }
+}
+    """
+    Then the 4 response should be
+    """
+{
+  "id":3
+}
+    """
+    When I get workout 3
+    Then the 5 response should be
+    """
+{
+  "workout":{
+    "type":"LEG",
+    "date":"2025-01-04",
+    "exercises":[
+      {
+        "name":"Squat",
+        "type":"LEG",
+        "weight":45,
+        "setsToReps":{
+          "1":0,
+          "2":0,
+          "3":0
+        }
+      }
+    ]
+  }
+}
+    """
+    When I update workout 3
+    """
+{
+  "type":"LEG",
+  "date":"2025-01-04",
+  "exercises":[
+    {
+      "name":"Squat",
+      "type":"LEG",
+      "weight":45,
+      "setsToReps":{
+        "1":5,
+        "2":5,
+        "3":3
+      }
+    }
+  ]
+}
+    """
+    Then the response is successful
+    When I get workout 3
+    Then the 5 response should be
+    """
+{
+  "workout":{
+    "type":"LEG",
+    "date":"2025-01-04",
+    "exercises":[
+      {
+        "name":"Squat",
+        "type":"LEG",
+        "weight":45,
+        "setsToReps":{
+          "1":5,
+          "2":5,
+          "3":3
+        }
+      }
+    ]
+  }
+}
+    """
+    When I request the next workout details
+    Then the 3 response should be
+    """
+{
+  "type":"PUSH",
+  "date":"2025-01-05",
+  "exerciseToWeight":{
+    "Bench Press":60
   }
 }
     """

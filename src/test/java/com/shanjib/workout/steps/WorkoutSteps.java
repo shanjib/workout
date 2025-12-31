@@ -68,7 +68,7 @@ public class WorkoutSteps {
 
     @When("I request the next workout details")
     public void iRequestTheNextWorkoutDetails() {
-        response = restTemplate.getForEntity(BASE_URL + Constants.WORKOUTS, String.class);
+        response = restTemplate.getForEntity(BASE_URL + Constants.WORKOUTS + Constants.NEXT, String.class);
     }
 
     @When("I confirm the next workout details")
@@ -106,6 +106,11 @@ public class WorkoutSteps {
             check(json, response.getBody(), CreateWorkoutResponseDTO.class);
         } else if (type == 5) {
             check(json, response.getBody(), GetWorkoutResponseDTO.class);
+        } else if (type == 6) {
+            check(json, response.getBody(), CreateExerciseResponseDTO.class);
+        } else {
+            success = false;
+            log.error("Unable to handle object {} with json {}", type, json);
         }
     }
 

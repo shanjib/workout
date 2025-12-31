@@ -1,7 +1,8 @@
 package com.shanjib.workout.dto;
 
+import java.util.List;
+
 public record CreateExerciseResponseDTO(
-        boolean success,
-        long id
+        List<CreateExerciseDTO> exercises
 ) {
 }
