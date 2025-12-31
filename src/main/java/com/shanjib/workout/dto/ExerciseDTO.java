@@ -3,6 +3,7 @@ package com.shanjib.workout.dto;
 import jakarta.validation.constraints.NotNull;
 
 public record ExerciseDTO (
+        Long id,
         @NotNull String name,
         @NotNull String type,
         @NotNull int sets,
