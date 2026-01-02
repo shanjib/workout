@@ -26,6 +26,13 @@ public class TrackedExercise extends BaseExercise {
     @ToString.Exclude
     private Workout workout;
 
+    public void initRepsPerSet() {
+        repsPerSet = new HashMap<>();
+        for (int i = 1; i < getSets() + 1; i++) {
+            repsPerSet.put(i, 0);
+        }
+    }
+
     public void setupData(int set) {
         if (repsPerSet == null) {
             repsPerSet = new HashMap<>();

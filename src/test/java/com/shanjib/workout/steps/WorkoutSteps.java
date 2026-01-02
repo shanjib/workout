@@ -6,6 +6,7 @@ import com.shanjib.workout.dto.*;
 import com.google.gson.*;
 import io.cucumber.java.After;
 import io.cucumber.java.BeforeAll;
+import io.cucumber.java.PendingException;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -86,6 +87,11 @@ public class WorkoutSteps {
         restTemplate.put(BASE_URL + Constants.WORKOUTS + "/" + id, buildEntity(json), String.class);
     }
 
+    @When("I get workouts")
+    public void iGetWorkouts() {
+        response = restTemplate.getForEntity(BASE_URL + Constants.WORKOUTS, String.class);
+    }
+
     @Then("the response is successful")
     public void theResponseIsSuccessful() {
         if (!objectsAreEqual(200, response.getStatusCode().value())) {
@@ -108,6 +114,8 @@ public class WorkoutSteps {
             check(json, response.getBody(), GetWorkoutResponseDTO.class);
         } else if (type == 6) {
             check(json, response.getBody(), CreateExerciseResponseDTO.class);
+        } else if (type == 7) {
+            check(json, response.getBody(), GetLatestWorkoutsResponseDTO.class);
         } else {
             success = false;
             log.error("Unable to handle object {} with json {}", type, json);

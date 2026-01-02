@@ -1,9 +1,7 @@
 package com.shanjib.workout.dto;
 
-import java.time.LocalDate;
+import java.util.List;
 
 public record GetLatestWorkoutsResponseDTO (
-        LocalDate date,
-        String type,
-        Long id
+        List<GetLatestWorkoutDTO> latestWorkouts
 ) {}

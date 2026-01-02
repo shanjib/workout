@@ -1,8 +1,16 @@
 package com.shanjib.workout.util;
 
 import com.shanjib.workout.dto.ExerciseDTO;
+import com.shanjib.workout.dto.GetLatestWorkoutDTO;
+import com.shanjib.workout.dto.WorkoutDTO;
+import com.shanjib.workout.dto.WorkoutExerciseDTO;
 import com.shanjib.workout.model.Exercise;
+import com.shanjib.workout.model.TrackedExercise;
+import com.shanjib.workout.model.Workout;
 import com.shanjib.workout.model.WorkoutType;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapperUtil {
     public static Exercise map(ExerciseDTO exerciseDTO) {
@@ -25,6 +33,28 @@ public class MapperUtil {
                 exercise.getReps(),
                 exercise.getWeightIncrement(),
                 exercise.getInitialWeight()
+        );
+    }
+
+    public static WorkoutDTO map(Workout workout) {
+        List<WorkoutExerciseDTO> workoutExerciseDTOS = new ArrayList<>();
+        for (TrackedExercise trackedExercise : workout.getTrackedExercises()) {
+            workoutExerciseDTOS.add(map(trackedExercise));
+        }
+        return new WorkoutDTO(
+                workout.getType().name(),
+                workout.getDate(),
+                workoutExerciseDTOS
+        );
+    }
+
+    public static WorkoutExerciseDTO map(TrackedExercise trackedExercise) {
+        return new WorkoutExerciseDTO(
+                trackedExercise.getId(),
+                trackedExercise.getName(),
+                trackedExercise.getType().name(),
+                trackedExercise.getWeight(),
+                trackedExercise.getRepsPerSet()
         );
     }
 

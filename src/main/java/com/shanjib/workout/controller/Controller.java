@@ -2,6 +2,7 @@ package com.shanjib.workout.controller;
 
 import com.shanjib.workout.dto.*;
 import com.shanjib.workout.model.Exercise;
+import com.shanjib.workout.model.TrackedExercise;
 import com.shanjib.workout.model.Workout;
 import com.shanjib.workout.model.WorkoutType;
 import com.shanjib.workout.repository.ExerciseRepository;
@@ -32,23 +33,59 @@ public class Controller {
     @PostMapping(Constants.WORKOUTS)
     public ResponseEntity<CreateWorkoutResponseDTO> createWorkout(
             @Valid @RequestBody CreateWorkoutRequestDTO requestDTO) {
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Workout workout = Workout.builder()
+                .type(MapperUtil.map(requestDTO.type()))
+                .date(requestDTO.date())
+                .build();
+        List<TrackedExercise> trackedExercises = new ArrayList<>();
+        for (String exerciseName : requestDTO.exerciseToWeight().keySet()) {
+            Exercise exercise = exerciseRepository.findByName(exerciseName);
+            TrackedExercise trackedExercise = TrackedExercise.builder()
+                    .name(exercise.getName())
+                    .sets(exercise.getSets())
+                    .reps(exercise.getReps())
+                    .type(exercise.getType())
+                    .weight(requestDTO.exerciseToWeight().get(exerciseName))
+                    .workout(workout)
+                    .build();
+            trackedExercise.initRepsPerSet();
+            trackedExercises.add(trackedExercise);
+        }
+        workout.setTrackedExercises(trackedExercises);
+        Workout savedWorkout = workoutRepository.save(workout);
+        return ResponseEntity.ok(new CreateWorkoutResponseDTO(savedWorkout.getId()));
     }
 
     @GetMapping(Constants.WORKOUTS)
     public ResponseEntity<GetLatestWorkoutsResponseDTO> getLatestWorkouts() {
-        return ResponseEntity.ok().build();
+        List<Workout> workouts = workoutRepository.findAll();
+        List<GetLatestWorkoutDTO> latestWorkoutDTOS = new ArrayList<>();
+        for (Workout workout : workouts) {
+            GetLatestWorkoutDTO latestWorkoutDTO = new GetLatestWorkoutDTO(
+                    workout.getDate(),
+                    workout.getType().name(),
+                    workout.getId()
+            );
+            latestWorkoutDTOS.add(latestWorkoutDTO);
+        }
+        return ResponseEntity.ok(new GetLatestWorkoutsResponseDTO(latestWorkoutDTOS));
     }
 
     @GetMapping(Constants.WORKOUTS + Constants.NEXT)
     public ResponseEntity<GetNextWorkoutDetailsResponseDTO> getNextWorkoutDetails() {
         Workout lastWorkout = workoutRepository.findTopByOrderByDateDesc().orElse(null);
-        WorkoutType type = lastWorkout == null? WorkoutType.PUSH : MapperUtil.getNextWorkoutType(lastWorkout.getType());
+        WorkoutType type = lastWorkout == null ? WorkoutType.PUSH : MapperUtil.getNextWorkoutType(lastWorkout.getType());
         Map<String, Double> nameToWeight = new HashMap<>();
-
-        List<Exercise> byType = exerciseRepository.findByType(type);
-        for (Exercise exercise : byType) {
-            nameToWeight.put(exercise.getName(), exercise.getInitialWeight());
+        Optional<Workout> lastWorkoutOfType = workoutRepository.findTopByTypeOrderByDateDesc(type);
+        if (lastWorkoutOfType.isPresent()) {
+            for (TrackedExercise trackedExercise : lastWorkoutOfType.get().getTrackedExercises()) {
+                nameToWeight.put(trackedExercise.getName(), trackedExercise.getWeight());
+            }
+        } else {
+            List<Exercise> byType = exerciseRepository.findByType(type);
+            for (Exercise exercise : byType) {
+                nameToWeight.put(exercise.getName(), exercise.getInitialWeight());
+            }
         }
         GetNextWorkoutDetailsResponseDTO responseDTO = new GetNextWorkoutDetailsResponseDTO(
                 type.name(), dateUtil.getCurrentDate(), nameToWeight);
@@ -58,14 +95,40 @@ public class Controller {
     @GetMapping(Constants.WORKOUTS + Constants.ID)
     public ResponseEntity<GetWorkoutResponseDTO> getWorkout(
             @PathVariable Long id) {
-        return ResponseEntity.ok().build();
+        Optional<Workout> workout = workoutRepository.findById(id);
+        if (workout.isPresent()) {
+            WorkoutDTO workoutDTO = MapperUtil.map(workout.get());
+            return ResponseEntity.ok(new GetWorkoutResponseDTO(workoutDTO));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @PutMapping(Constants.WORKOUTS + Constants.ID)
     public ResponseEntity<UpdateWorkoutResponseDTO> updateWorkout(
             @PathVariable Long id,
             @Valid @RequestBody UpdateWorkoutRequestDTO requestDTO) {
-        return ResponseEntity.ok().build();
+        Optional<Workout> optionalWorkout = workoutRepository.findById(id);
+        if (optionalWorkout.isPresent()) {
+            Workout workout = optionalWorkout.get();
+            WorkoutDTO workoutDTO = requestDTO.workout();
+
+            workout.setDate(workoutDTO.date());
+            workout.setType(MapperUtil.map(workoutDTO.type()));
+
+            for (WorkoutExerciseDTO exerciseDTO : workoutDTO.exercises()) {
+                for (TrackedExercise exercise : workout.getTrackedExercises()) {
+                    if (exercise.getId() == exerciseDTO.id()) {
+                        exercise.setWeight(exerciseDTO.weight());
+                        exercise.setRepsPerSet(exerciseDTO.setsToReps());
+                    }
+                }
+            }
+            workoutRepository.save(workout);
+            return ResponseEntity.ok(new UpdateWorkoutResponseDTO(true));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
     @GetMapping(Constants.EXERCISES)

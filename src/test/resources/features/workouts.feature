@@ -16,7 +16,7 @@ Feature: Workout Management
     {
       "name":"Deadlift",
       "type":"PULL",
-      "sets":5,
+      "sets":3,
       "reps":5,
       "weightIncrement":5.0,
       "initialWeight":45
@@ -24,7 +24,7 @@ Feature: Workout Management
     {
       "name":"Squat",
       "type":"LEG",
-      "sets":5,
+      "sets":3,
       "reps":5,
       "weightIncrement":5.0,
       "initialWeight":45
@@ -72,7 +72,7 @@ Feature: Workout Management
       "id":2,
       "name":"Deadlift",
       "type":"PULL",
-      "sets":5,
+      "sets":3,
       "reps":5,
       "weightIncrement":5.0,
       "initialWeight":45
@@ -81,7 +81,7 @@ Feature: Workout Management
       "id":3,
       "name":"Squat",
       "type":"LEG",
-      "sets":5,
+      "sets":3,
       "reps":5,
       "weightIncrement":5.0,
       "initialWeight":45
@@ -154,6 +154,7 @@ Feature: Workout Management
     "date":"2025-01-02",
     "exercises":[
       {
+        "id":1,
         "name":"Bench Press",
         "type":"PUSH",
         "weight":60,
@@ -170,20 +171,23 @@ Feature: Workout Management
     When I update workout 1
     """
 {
-  "type":"PUSH",
-  "date":"2025-01-02",
-  "exercises":[
-    {
-      "name":"Bench Press",
-      "type":"PUSH",
-      "weight":60,
-      "setsToReps":{
-        "1":5,
-        "2":5,
-        "3":5
+  "workout":{
+    "type":"PUSH",
+    "date":"2025-01-02",
+    "exercises":[
+      {
+        "id":1,
+        "name":"Bench Press",
+        "type":"PUSH",
+        "weight":60,
+        "setsToReps":{
+          "1":5,
+          "2":5,
+          "3":5
+        }
       }
-    }
-  ]
+    ]
+  }
 }
     """
     Then the response is successful
@@ -196,6 +200,7 @@ Feature: Workout Management
     "date":"2025-01-02",
     "exercises":[
       {
+        "id":1,
         "name":"Bench Press",
         "type":"PUSH",
         "weight":60,
@@ -245,6 +250,7 @@ Feature: Workout Management
     "date":"2025-01-03",
     "exercises":[
       {
+        "id":2,
         "name":"Deadlift",
         "type":"PULL",
         "weight":80,
@@ -261,20 +267,23 @@ Feature: Workout Management
     When I update workout 2
     """
 {
-  "type":"PULL",
-  "date":"2025-01-03",
-  "exercises":[
-    {
-      "name":"Deadlift",
-      "type":"PULL",
-      "weight":80,
-      "setsToReps":{
-        "1":5,
-        "2":5,
-        "3":5
+  "workout":{
+    "type":"PULL",
+    "date":"2025-01-03",
+    "exercises":[
+      {
+        "id":2,
+        "name":"Deadlift",
+        "type":"PULL",
+        "weight":80,
+        "setsToReps":{
+          "1":5,
+          "2":5,
+          "3":5
+        }
       }
-    }
-  ]
+    ]
+  }
 }
     """
     Then the response is successful
@@ -287,6 +296,7 @@ Feature: Workout Management
     "date":"2025-01-03",
     "exercises":[
       {
+        "id":2,
         "name":"Deadlift",
         "type":"PULL",
         "weight":80,
@@ -336,6 +346,7 @@ Feature: Workout Management
     "date":"2025-01-04",
     "exercises":[
       {
+        "id":3,
         "name":"Squat",
         "type":"LEG",
         "weight":45,
@@ -352,20 +363,23 @@ Feature: Workout Management
     When I update workout 3
     """
 {
-  "type":"LEG",
-  "date":"2025-01-04",
-  "exercises":[
-    {
-      "name":"Squat",
-      "type":"LEG",
-      "weight":45,
-      "setsToReps":{
-        "1":5,
-        "2":5,
-        "3":3
+  "workout":{
+    "type":"LEG",
+    "date":"2025-01-04",
+    "exercises":[
+      {
+        "id":3,
+        "name":"Squat",
+        "type":"LEG",
+        "weight":45,
+        "setsToReps":{
+          "1":5,
+          "2":5,
+          "3":3
+        }
       }
-    }
-  ]
+    ]
+  }
 }
     """
     Then the response is successful
@@ -378,6 +392,7 @@ Feature: Workout Management
     "date":"2025-01-04",
     "exercises":[
       {
+        "id":3,
         "name":"Squat",
         "type":"LEG",
         "weight":45,
@@ -400,5 +415,28 @@ Feature: Workout Management
   "exerciseToWeight":{
     "Bench Press":60
   }
+}
+    """
+    When I get workouts
+    Then the 7 response should be
+    """
+{
+  "latestWorkouts":[
+    {
+      "date":"2025-01-02",
+      "type":"PUSH",
+      "id":1
+    },
+    {
+      "date":"2025-01-03",
+      "type":"PULL",
+      "id":2
+    },
+    {
+      "date":"2025-01-04",
+      "type":"LEG",
+      "id":3
+    }
+  ]
 }
     """
