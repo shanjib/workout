@@ -1,12 +1,11 @@
 package com.shanjib.workout.steps;
 
-import com.shanjib.workout.DemoApplication;
+import com.shanjib.workout.WorkoutApplication;
 import com.shanjib.workout.controller.Constants;
 import com.shanjib.workout.dto.*;
 import com.google.gson.*;
 import io.cucumber.java.After;
 import io.cucumber.java.BeforeAll;
-import io.cucumber.java.PendingException;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.spring.CucumberContextConfiguration;
@@ -39,7 +38,7 @@ public class WorkoutSteps {
 
     @BeforeAll
     public static void theApplicationIsRunning() {
-        DemoApplication.main(new String[] {});
+        WorkoutApplication.main(new String[] {});
     }
 
     @After

@@ -54,7 +54,11 @@ public class MapperUtil {
                 trackedExercise.getName(),
                 trackedExercise.getType().name(),
                 trackedExercise.getWeight(),
-                trackedExercise.getRepsPerSet()
+                trackedExercise.getInitialWeight(),
+                trackedExercise.getInitialWeight() != 0,
+                trackedExercise.getReps(),
+                trackedExercise.getRepsPerSet(),
+                trackedExercise.getNotes()
         );
     }
 

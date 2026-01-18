@@ -20,6 +20,7 @@ public class TrackedExercise extends BaseExercise {
     @Column(name = "reps")
     private Map<Integer, Integer> repsPerSet;
     private double weight;
+    private String notes;
 
     @JsonBackReference
     @ManyToOne

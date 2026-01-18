@@ -126,6 +126,9 @@ Feature: Workout Management
   "date":"2025-01-02",
   "exerciseToWeight":{
     "Bench Press":45
+  },
+  "exerciseToNotes":{
+    "Bench Press":null
   }
 }
     """
@@ -157,12 +160,16 @@ Feature: Workout Management
         "id":1,
         "name":"Bench Press",
         "type":"PUSH",
+        "initialWeight": 45,
         "weight":60,
+        "reps":5,
+        "barExercise":true,
         "setsToReps":{
           "1":0,
           "2":0,
           "3":0
-        }
+        },
+        "notes":null
       }
     ]
   }
@@ -180,11 +187,14 @@ Feature: Workout Management
         "name":"Bench Press",
         "type":"PUSH",
         "weight":60,
+        "reps":5,
+        "barExercise":true,
         "setsToReps":{
           "1":5,
           "2":5,
           "3":5
-        }
+        },
+        "notes":"very easy"
       }
     ]
   }
@@ -203,12 +213,16 @@ Feature: Workout Management
         "id":1,
         "name":"Bench Press",
         "type":"PUSH",
+        "initialWeight": 45,
         "weight":60,
+        "reps":5,
+        "barExercise":true,
         "setsToReps":{
           "1":5,
           "2":5,
           "3":5
-        }
+        },
+        "notes":"very easy"
       }
     ]
   }
@@ -222,6 +236,9 @@ Feature: Workout Management
   "date":"2025-01-03",
   "exerciseToWeight":{
     "Deadlift":45
+  },
+  "exerciseToNotes":{
+    "Deadlift":null
   }
 }
     """
@@ -253,12 +270,16 @@ Feature: Workout Management
         "id":2,
         "name":"Deadlift",
         "type":"PULL",
+        "initialWeight": 45,
         "weight":80,
+        "reps":5,
+        "barExercise":true,
         "setsToReps":{
           "1":0,
           "2":0,
           "3":0
-        }
+        },
+        "notes":null
       }
     ]
   }
@@ -276,11 +297,14 @@ Feature: Workout Management
         "name":"Deadlift",
         "type":"PULL",
         "weight":80,
+        "reps":5,
+        "barExercise":true,
         "setsToReps":{
           "1":5,
           "2":5,
           "3":5
-        }
+        },
+        "notes":null
       }
     ]
   }
@@ -299,12 +323,16 @@ Feature: Workout Management
         "id":2,
         "name":"Deadlift",
         "type":"PULL",
+        "initialWeight": 45,
         "weight":80,
+        "reps":5,
+        "barExercise":true,
         "setsToReps":{
           "1":5,
           "2":5,
           "3":5
-        }
+        },
+        "notes":null
       }
     ]
   }
@@ -318,6 +346,9 @@ Feature: Workout Management
   "date":"2025-01-04",
   "exerciseToWeight":{
     "Squat":45
+  },
+  "exerciseToNotes":{
+    "Squat":null
   }
 }
     """
@@ -349,12 +380,16 @@ Feature: Workout Management
         "id":3,
         "name":"Squat",
         "type":"LEG",
+        "initialWeight": 45,
         "weight":45,
+        "reps":5,
+        "barExercise":true,
         "setsToReps":{
           "1":0,
           "2":0,
           "3":0
-        }
+        },
+        "notes":null
       }
     ]
   }
@@ -372,11 +407,14 @@ Feature: Workout Management
         "name":"Squat",
         "type":"LEG",
         "weight":45,
+        "reps":5,
+        "barExercise":true,
         "setsToReps":{
           "1":5,
           "2":5,
           "3":3
-        }
+        },
+        "notes":null
       }
     ]
   }
@@ -395,12 +433,16 @@ Feature: Workout Management
         "id":3,
         "name":"Squat",
         "type":"LEG",
+        "initialWeight": 45,
         "weight":45,
+        "reps":5,
+        "barExercise":true,
         "setsToReps":{
           "1":5,
           "2":5,
           "3":3
-        }
+        },
+        "notes":null
       }
     ]
   }
@@ -414,6 +456,9 @@ Feature: Workout Management
   "date":"2025-01-05",
   "exerciseToWeight":{
     "Bench Press":60
+  },
+  "exerciseToNotes":{
+    "Bench Press":"very easy"
   }
 }
     """
@@ -423,9 +468,9 @@ Feature: Workout Management
 {
   "latestWorkouts":[
     {
-      "date":"2025-01-02",
-      "type":"PUSH",
-      "id":1
+      "date":"2025-01-04",
+      "type":"LEG",
+      "id":3
     },
     {
       "date":"2025-01-03",
@@ -433,9 +478,9 @@ Feature: Workout Management
       "id":2
     },
     {
-      "date":"2025-01-04",
-      "type":"LEG",
-      "id":3
+      "date":"2025-01-02",
+      "type":"PUSH",
+      "id":1
     }
   ]
 }

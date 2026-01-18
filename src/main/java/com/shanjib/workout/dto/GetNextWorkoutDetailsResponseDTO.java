@@ -6,5 +6,6 @@ import java.util.Map;
 public record GetNextWorkoutDetailsResponseDTO(
         String type,
         LocalDate date,
-        Map<String, Double> exerciseToWeight
+        Map<String, Double> exerciseToWeight,
+        Map<String, String> exerciseToNotes
 ) {}

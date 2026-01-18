@@ -13,7 +13,7 @@ import com.shanjib.workout.util.MapperUtil;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Limit;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +33,7 @@ public class Controller {
     @PostMapping(Constants.WORKOUTS)
     public ResponseEntity<CreateWorkoutResponseDTO> createWorkout(
             @Valid @RequestBody CreateWorkoutRequestDTO requestDTO) {
+        log.info("Creating workout with request: {}", requestDTO);
         Workout workout = Workout.builder()
                 .type(MapperUtil.map(requestDTO.type()))
                 .date(requestDTO.date())
@@ -45,6 +46,7 @@ public class Controller {
                     .sets(exercise.getSets())
                     .reps(exercise.getReps())
                     .type(exercise.getType())
+                    .initialWeight(exercise.getInitialWeight())
                     .weight(requestDTO.exerciseToWeight().get(exerciseName))
                     .workout(workout)
                     .build();
@@ -58,7 +60,8 @@ public class Controller {
 
     @GetMapping(Constants.WORKOUTS)
     public ResponseEntity<GetLatestWorkoutsResponseDTO> getLatestWorkouts() {
-        List<Workout> workouts = workoutRepository.findAll();
+        log.info("Getting latest workouts");
+        List<Workout> workouts = workoutRepository.findAllByOrderByDateDesc(Limit.of(12));
         List<GetLatestWorkoutDTO> latestWorkoutDTOS = new ArrayList<>();
         for (Workout workout : workouts) {
             GetLatestWorkoutDTO latestWorkoutDTO = new GetLatestWorkoutDTO(
@@ -68,33 +71,39 @@ public class Controller {
             );
             latestWorkoutDTOS.add(latestWorkoutDTO);
         }
+        log.info("Returning {} workouts", latestWorkoutDTOS.size());
         return ResponseEntity.ok(new GetLatestWorkoutsResponseDTO(latestWorkoutDTOS));
     }
 
     @GetMapping(Constants.WORKOUTS + Constants.NEXT)
     public ResponseEntity<GetNextWorkoutDetailsResponseDTO> getNextWorkoutDetails() {
+        log.info("Getting next workout details");
         Workout lastWorkout = workoutRepository.findTopByOrderByDateDesc().orElse(null);
         WorkoutType type = lastWorkout == null ? WorkoutType.PUSH : MapperUtil.getNextWorkoutType(lastWorkout.getType());
         Map<String, Double> nameToWeight = new HashMap<>();
+        Map<String, String> nameToNotes = new HashMap<>();
         Optional<Workout> lastWorkoutOfType = workoutRepository.findTopByTypeOrderByDateDesc(type);
         if (lastWorkoutOfType.isPresent()) {
             for (TrackedExercise trackedExercise : lastWorkoutOfType.get().getTrackedExercises()) {
                 nameToWeight.put(trackedExercise.getName(), trackedExercise.getWeight());
+                nameToNotes.put(trackedExercise.getName(), trackedExercise.getNotes());
             }
         } else {
             List<Exercise> byType = exerciseRepository.findByType(type);
             for (Exercise exercise : byType) {
                 nameToWeight.put(exercise.getName(), exercise.getInitialWeight());
+                nameToNotes.put(exercise.getName(), null);
             }
         }
         GetNextWorkoutDetailsResponseDTO responseDTO = new GetNextWorkoutDetailsResponseDTO(
-                type.name(), dateUtil.getCurrentDate(), nameToWeight);
+                type.name(), dateUtil.getCurrentDate(), nameToWeight, nameToNotes);
         return ResponseEntity.ok(responseDTO);
     }
 
     @GetMapping(Constants.WORKOUTS + Constants.ID)
     public ResponseEntity<GetWorkoutResponseDTO> getWorkout(
             @PathVariable Long id) {
+        log.info("Getting workout {}", id);
         Optional<Workout> workout = workoutRepository.findById(id);
         if (workout.isPresent()) {
             WorkoutDTO workoutDTO = MapperUtil.map(workout.get());
@@ -108,6 +117,7 @@ public class Controller {
     public ResponseEntity<UpdateWorkoutResponseDTO> updateWorkout(
             @PathVariable Long id,
             @Valid @RequestBody UpdateWorkoutRequestDTO requestDTO) {
+        log.info("Updating workout {} with {}", id, requestDTO);
         Optional<Workout> optionalWorkout = workoutRepository.findById(id);
         if (optionalWorkout.isPresent()) {
             Workout workout = optionalWorkout.get();
@@ -121,6 +131,7 @@ public class Controller {
                     if (exercise.getId() == exerciseDTO.id()) {
                         exercise.setWeight(exerciseDTO.weight());
                         exercise.setRepsPerSet(exerciseDTO.setsToReps());
+                        exercise.setNotes(exerciseDTO.notes());
                     }
                 }
             }
@@ -131,8 +142,15 @@ public class Controller {
         }
     }
 
+    @DeleteMapping(Constants.WORKOUTS + Constants.ID)
+    public void deleteWorkout(@PathVariable Long id) {
+        log.info("Deleting workout {}", id);
+        workoutRepository.deleteById(id);
+    }
+
     @GetMapping(Constants.EXERCISES)
     public ResponseEntity<GetExercisesResponseDTO> getExercises() {
+        log.info("Getting all exercises");
         List<ExerciseDTO> getResponses = new ArrayList<>();
         for (Exercise exercise : exerciseRepository.findAll()) {
             ExerciseDTO exerciseDTO = MapperUtil.map(exercise);
@@ -144,6 +162,7 @@ public class Controller {
     @GetMapping(Constants.EXERCISES + Constants.ID)
     public ResponseEntity<GetExerciseResponseDTO> getExercise(
             @PathVariable Long id) {
+        log.info("Getting exercise {}", id);
         Optional<Exercise> exercise = exerciseRepository.findById(id);
         if (exercise.isPresent()) {
             ExerciseDTO exerciseDTO = MapperUtil.map(exercise.get());
@@ -156,6 +175,7 @@ public class Controller {
     @PostMapping(Constants.EXERCISES)
     public ResponseEntity<CreateExerciseResponseDTO> createExercise(
             @Valid @RequestBody CreateExerciseRequestDTO requestDTO) {
+        log.info("Creating exercises {}", requestDTO);
         List<CreateExerciseDTO> createResponses = new ArrayList<>();
         for (ExerciseDTO exerciseDTO : requestDTO.exercises()) {
             Exercise exercise = MapperUtil.map(exerciseDTO);
@@ -169,6 +189,7 @@ public class Controller {
     public ResponseEntity<UpdateExerciseResponseDTO> updateExercise(
             @PathVariable Long id,
             @Valid @RequestBody UpdateExerciseRequestDTO requestDTO) {
+        log.info("Updating exerices {} with {}", id, requestDTO);
         try {
             Exercise exercise = MapperUtil.map(requestDTO.exercise());
             exercise.setId(id);
