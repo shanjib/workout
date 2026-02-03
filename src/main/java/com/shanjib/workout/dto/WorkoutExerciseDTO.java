@@ -11,6 +11,7 @@ public record WorkoutExerciseDTO(
         @NotNull String type,
         @NotNull Double weight,
         @NotNull Double initialWeight,
+        @NotNull Double numberOfWeights,
         @NotNull Boolean barExercise,
         @NotNull Integer reps,
         @NotNull @NotEmpty Map<Integer, Integer> setsToReps,

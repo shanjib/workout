@@ -27,4 +27,8 @@ public class Workout {
     @JsonManagedReference
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrackedExercise> trackedExercises;
+
+    public void addTrackedExercises(List<TrackedExercise> exercises) {
+        this.trackedExercises.addAll(exercises);
+    }
 }

@@ -17,6 +17,7 @@ public abstract class BaseExercise {
     private int sets;
     private int reps;
     private double weightIncrement;
+    private double numberOfWeights;
     private double initialWeight;
 
     @Enumerated(EnumType.STRING)

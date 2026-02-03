@@ -16,3 +16,13 @@ This application is meant to track a push/pull/leg split, with the occasional ca
 | GET    | /api/workouts/next  | get details of next workout |
 | POST   | /api/workouts       | create an workout           |
 | PUT    | /api/workouts/{id}  | update 1 workout            |
+
+## TODOs
+* Auto-append to notes
+  * "2 sets completed, 8 reps on last set during last workout"
+* 1 weight vs 2 weight exercises
+  * Machine Single Leg Press
+    * Set weight to X
+  * Squat
+    * Given initial weight X, add Y to each side
+* Remove bar exercise? 

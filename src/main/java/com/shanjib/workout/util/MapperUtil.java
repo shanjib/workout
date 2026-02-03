@@ -19,6 +19,7 @@ public class MapperUtil {
                 .sets(exerciseDTO.sets())
                 .reps(exerciseDTO.reps())
                 .weightIncrement(exerciseDTO.weightIncrement())
+                .numberOfWeights(exerciseDTO.numberOfWeights())
                 .initialWeight(exerciseDTO.initialWeight())
                 .type(map(exerciseDTO.type()))
                 .build();
@@ -32,6 +33,7 @@ public class MapperUtil {
                 exercise.getSets(),
                 exercise.getReps(),
                 exercise.getWeightIncrement(),
+                exercise.getNumberOfWeights(),
                 exercise.getInitialWeight()
         );
     }
@@ -49,16 +51,25 @@ public class MapperUtil {
     }
 
     public static WorkoutExerciseDTO map(TrackedExercise trackedExercise) {
+        return map(trackedExercise, false);
+    }
+
+    public static WorkoutExerciseDTO map(TrackedExercise trackedExercise, boolean appendSuccessNotes) {
+        String notes = trackedExercise.getNotes() == null ? "" : trackedExercise.getNotes();
+        if (appendSuccessNotes && trackedExercise.isSuccessful()) {
+            notes = notes + " All sets completed successfully last time.";
+        }
         return new WorkoutExerciseDTO(
                 trackedExercise.getId(),
                 trackedExercise.getName(),
                 trackedExercise.getType().name(),
                 trackedExercise.getWeight(),
                 trackedExercise.getInitialWeight(),
+                trackedExercise.getNumberOfWeights(),
                 trackedExercise.getInitialWeight() != 0,
                 trackedExercise.getReps(),
                 trackedExercise.getRepsPerSet(),
-                trackedExercise.getNotes()
+                notes
         );
     }
 

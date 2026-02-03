@@ -126,7 +126,7 @@ public class WorkoutSteps {
         T a = gson.fromJson(actual, clazz);
         if (!objectsAreEqual(e, a)) {
             success = false;
-            log.error("Failed on {}\nexpected: {}\nactual: {}\n", clazz, e, a);
+            log.error("Failed on {}\nexpected: {}\n  actual: {}\n", clazz, e, a);
         }
     }
 

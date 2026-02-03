@@ -46,6 +46,7 @@ public class Controller {
                     .sets(exercise.getSets())
                     .reps(exercise.getReps())
                     .type(exercise.getType())
+                    .numberOfWeights(exercise.getNumberOfWeights())
                     .initialWeight(exercise.getInitialWeight())
                     .weight(requestDTO.exerciseToWeight().get(exerciseName))
                     .workout(workout)
@@ -80,23 +81,31 @@ public class Controller {
         log.info("Getting next workout details");
         Workout lastWorkout = workoutRepository.findTopByOrderByDateDesc().orElse(null);
         WorkoutType type = lastWorkout == null ? WorkoutType.PUSH : MapperUtil.getNextWorkoutType(lastWorkout.getType());
-        Map<String, Double> nameToWeight = new HashMap<>();
-        Map<String, String> nameToNotes = new HashMap<>();
+        List<WorkoutExerciseDTO> exerciseDTOS = new ArrayList<>();
         Optional<Workout> lastWorkoutOfType = workoutRepository.findTopByTypeOrderByDateDesc(type);
         if (lastWorkoutOfType.isPresent()) {
             for (TrackedExercise trackedExercise : lastWorkoutOfType.get().getTrackedExercises()) {
-                nameToWeight.put(trackedExercise.getName(), trackedExercise.getWeight());
-                nameToNotes.put(trackedExercise.getName(), trackedExercise.getNotes());
+                exerciseDTOS.add(MapperUtil.map(trackedExercise, true));
             }
         } else {
             List<Exercise> byType = exerciseRepository.findByType(type);
             for (Exercise exercise : byType) {
-                nameToWeight.put(exercise.getName(), exercise.getInitialWeight());
-                nameToNotes.put(exercise.getName(), null);
+                exerciseDTOS.add(new WorkoutExerciseDTO(
+                        exercise.getId(),
+                        exercise.getName(),
+                        exercise.getType().name(),
+                        exercise.getInitialWeight(),
+                        exercise.getInitialWeight(),
+                        exercise.getNumberOfWeights(),
+                        exercise.getInitialWeight() != 0,
+                        exercise.getReps(),
+                        null,
+                        "This is the first time this exercise has been done."
+                ));
             }
         }
         GetNextWorkoutDetailsResponseDTO responseDTO = new GetNextWorkoutDetailsResponseDTO(
-                type.name(), dateUtil.getCurrentDate(), nameToWeight, nameToNotes);
+                type.name(), dateUtil.getCurrentDate(), exerciseDTOS);
         return ResponseEntity.ok(responseDTO);
     }
 
@@ -132,8 +141,29 @@ public class Controller {
                         exercise.setWeight(exerciseDTO.weight());
                         exercise.setRepsPerSet(exerciseDTO.setsToReps());
                         exercise.setNotes(exerciseDTO.notes());
+                        break;
                     }
                 }
+            }
+
+            if (requestDTO.newExerciseToWeight() != null && !requestDTO.newExerciseToWeight().isEmpty()) {
+                List<TrackedExercise> trackedExercises = new ArrayList<>();
+                for (String exerciseName : requestDTO.newExerciseToWeight().keySet()) {
+                    Exercise exercise = exerciseRepository.findByName(exerciseName);
+                    TrackedExercise trackedExercise = TrackedExercise.builder()
+                            .name(exercise.getName())
+                            .sets(exercise.getSets())
+                            .reps(exercise.getReps())
+                            .type(exercise.getType())
+                            .numberOfWeights(exercise.getNumberOfWeights())
+                            .initialWeight(exercise.getInitialWeight())
+                            .weight(requestDTO.newExerciseToWeight().get(exerciseName))
+                            .workout(workout)
+                            .build();
+                    trackedExercise.initRepsPerSet();
+                    trackedExercises.add(trackedExercise);
+                }
+                workout.addTrackedExercises(trackedExercises);
             }
             workoutRepository.save(workout);
             return ResponseEntity.ok(new UpdateWorkoutResponseDTO(true));
@@ -189,7 +219,7 @@ public class Controller {
     public ResponseEntity<UpdateExerciseResponseDTO> updateExercise(
             @PathVariable Long id,
             @Valid @RequestBody UpdateExerciseRequestDTO requestDTO) {
-        log.info("Updating exerices {} with {}", id, requestDTO);
+        log.info("Updating exercises {} with {}", id, requestDTO);
         try {
             Exercise exercise = MapperUtil.map(requestDTO.exercise());
             exercise.setId(id);
@@ -198,5 +228,11 @@ public class Controller {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().build();
         }
+    }
+
+    @DeleteMapping(Constants.EXERCISES + Constants.ID)
+    public void deleteExercise(@PathVariable Long id) {
+        log.info("Deleting exercise {}", id);
+        exerciseRepository.deleteById(id);
     }
 }

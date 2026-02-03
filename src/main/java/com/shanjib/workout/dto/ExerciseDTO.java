@@ -9,5 +9,6 @@ public record ExerciseDTO (
         @NotNull int sets,
         @NotNull int reps,
         @NotNull double weightIncrement,
+        @NotNull double numberOfWeights,
         @NotNull double initialWeight
 ) {}
