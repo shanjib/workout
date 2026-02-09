@@ -1,6 +1,6 @@
 Feature: Workout Management
 
-  Scenario: Workout Lifecycle
+  Scenario: Create and update exercises
     When I create new exercises with
     """
 {
@@ -126,6 +126,8 @@ Feature: Workout Management
   }
 }
     """
+
+  Scenario: Create a few workouts
     When I request the next workout details
     Then the 3 response should be
     """
@@ -187,7 +189,7 @@ Feature: Workout Management
           "2":0,
           "3":0
         },
-        "notes":null
+        "notes":""
       }
     ]
   }
@@ -308,7 +310,7 @@ Feature: Workout Management
           "2":0,
           "3":0
         },
-        "notes":null
+        "notes":""
       }
     ]
   }
@@ -333,7 +335,7 @@ Feature: Workout Management
           "2":5,
           "3":5
         },
-        "notes":null
+        "notes":""
       }
     ]
   }
@@ -362,7 +364,7 @@ Feature: Workout Management
           "2":5,
           "3":5
         },
-        "notes":null
+        "notes":""
       }
     ]
   }
@@ -429,7 +431,7 @@ Feature: Workout Management
           "2":0,
           "3":0
         },
-        "notes":null
+        "notes":""
       }
     ]
   }
@@ -454,7 +456,7 @@ Feature: Workout Management
           "2":5,
           "3":3
         },
-        "notes":null
+        "notes":""
       }
     ]
   }
@@ -483,7 +485,7 @@ Feature: Workout Management
           "2":5,
           "3":3
         },
-        "notes":null
+        "notes":""
       }
     ]
   }
@@ -541,8 +543,7 @@ Feature: Workout Management
 }
     """
 
-  Scenario: Multi Exercise
-    # This scenario is dependent on the previous scenario
+  Scenario: Create workout with exercise not provided
     When I create new exercises with
     """
 {
@@ -613,6 +614,8 @@ Feature: Workout Management
   "id":4
 }
     """
+
+  Scenario: Update workout with new exercise
     When I get workout 4
     Then the 5 response should be
     """
@@ -635,7 +638,7 @@ Feature: Workout Management
           "2":0,
           "3":0
         },
-        "notes":null
+        "notes":""
       },
       {
         "id":5,
@@ -651,7 +654,7 @@ Feature: Workout Management
           "2":0,
           "3":0
         },
-        "notes":null
+        "notes":""
       }
     ]
   }
@@ -681,7 +684,7 @@ Feature: Workout Management
           "2":0,
           "3":0
         },
-        "notes":null
+        "notes":""
       },
       {
         "id":5,
@@ -697,7 +700,7 @@ Feature: Workout Management
           "2":0,
           "3":0
         },
-        "notes":null
+        "notes":""
       }
     ]
   }
@@ -726,7 +729,7 @@ Feature: Workout Management
           "2":0,
           "3":0
         },
-        "notes":null
+        "notes":""
       },
       {
         "id":5,
@@ -742,7 +745,7 @@ Feature: Workout Management
           "2":0,
           "3":0
         },
-        "notes":null
+        "notes":""
       },
       {
         "id":6,
@@ -758,7 +761,96 @@ Feature: Workout Management
           "2":0,
           "3":0
         },
-        "notes":null
+        "notes":""
+      }
+    ]
+  }
+}
+    """
+
+  Scenario: Remove exercise from workout
+    When I update workout 4
+    """
+{
+  "workout":{
+    "type":"PUSH",
+    "date":"2025-01-06",
+    "exercises":[
+      {
+        "id":4,
+        "name":"Bench Press",
+        "type":"PUSH",
+        "initialWeight": 45,
+        "numberOfWeights":1,
+        "weight":70,
+        "reps":5,
+        "barExercise":true,
+        "setsToReps":{
+          "1":0,
+          "2":0,
+          "3":0
+        },
+        "notes":""
+      },
+      {
+        "id":6,
+        "name":"Tricep Pushdown",
+        "type":"PUSH",
+        "initialWeight": 0,
+        "numberOfWeights": 1,
+        "weight":30,
+        "reps":10,
+        "barExercise":false,
+        "setsToReps":{
+          "1":0,
+          "2":0,
+          "3":0
+        },
+        "notes":""
+      }
+    ]
+  }
+}
+    """
+    When I get workout 4
+    Then the 5 response should be
+    """
+{
+  "workout":{
+    "type":"PUSH",
+    "date":"2025-01-06",
+    "exercises":[
+      {
+        "id":4,
+        "name":"Bench Press",
+        "type":"PUSH",
+        "initialWeight": 45,
+        "numberOfWeights":1,
+        "weight":70,
+        "reps":5,
+        "barExercise":true,
+        "setsToReps":{
+          "1":0,
+          "2":0,
+          "3":0
+        },
+        "notes":""
+      },
+      {
+        "id":6,
+        "name":"Tricep Pushdown",
+        "type":"PUSH",
+        "initialWeight": 0,
+        "numberOfWeights": 1,
+        "weight":30,
+        "reps":10,
+        "barExercise":false,
+        "setsToReps":{
+          "1":0,
+          "2":0,
+          "3":0
+        },
+        "notes":""
       }
     ]
   }

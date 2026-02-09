@@ -135,15 +135,27 @@ public class Controller {
             workout.setDate(workoutDTO.date());
             workout.setType(MapperUtil.map(workoutDTO.type()));
 
+            List<WorkoutExerciseDTO> exercisesToUpdate = new ArrayList<>(workoutDTO.exercises());
+            List<TrackedExercise> updatedExercises = new ArrayList<>(workout.getTrackedExercises());
             for (WorkoutExerciseDTO exerciseDTO : workoutDTO.exercises()) {
                 for (TrackedExercise exercise : workout.getTrackedExercises()) {
                     if (exercise.getId() == exerciseDTO.id()) {
                         exercise.setWeight(exerciseDTO.weight());
                         exercise.setRepsPerSet(exerciseDTO.setsToReps());
                         exercise.setNotes(exerciseDTO.notes());
+                        exercisesToUpdate.remove(exerciseDTO);
+                        updatedExercises.remove(exercise);
                         break;
                     }
                 }
+            }
+
+            if (!exercisesToUpdate.isEmpty()) {
+                log.error("Could not update all exercises: {}", exercisesToUpdate);
+            }
+
+            if (!updatedExercises.isEmpty()) {
+                workout.getTrackedExercises().removeAll(updatedExercises);
             }
 
             if (requestDTO.newExerciseToWeight() != null && !requestDTO.newExerciseToWeight().isEmpty()) {
